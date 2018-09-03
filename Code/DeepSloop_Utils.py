@@ -33,7 +33,7 @@ def fasta_to_dict(fasta_file_name, max_sloops=None):
         sloop_dict = { info : sloop }
 
     Additionally, this subroutine will scan through your set of sloops and determine the longest sloop in order
-    to pad outentries into you LSTM
+    to pad out entries for your LSTM
 
     Arguments:
     fasta_file_name -- A string representing your FASTA input file name. This FASTA file should contain sloops.
