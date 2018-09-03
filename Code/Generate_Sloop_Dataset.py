@@ -207,15 +207,15 @@ def generate_dataset(data_dir=r"../Data",
 
     file_ext_num = 0
     file_unique = False
-    out_file = "Raw_Sloops_Loop_{}_{}_Seg_{}_{}_ext{}.fasta".format(min_loop_len, max_loop_len, min_segment_len, min_segment_len, file_ext_num)
+    file_out = "Raw_Sloops_Loop_{}_{}_Seg_{}_{}_ext{}.fasta".format(min_loop_len, max_loop_len, min_segment_len, min_segment_len, file_ext_num)
 
     while not file_unique:
-        if os.path.exists(os.path.join(data_dir, out_file)):
+        if os.path.exists(os.path.join(data_dir, file_out)):
             file_ext_num += 1
         else:
             file_unique = True
 
-    with open(outfile, 'w') as f:
+    with open(file_out, 'w') as f:
         for sloople in filtered_sloople_list:
             sloop_id, sloop_seq = sloople
             f.write('>{}\n'.format(sloop_id))
