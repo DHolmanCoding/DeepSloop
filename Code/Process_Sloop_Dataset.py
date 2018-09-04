@@ -12,7 +12,7 @@ Your data infrastructure within your Deep Sloop should be set up as follows:
 # Dependencies
 #
 
-import Deep_Sloop_Utils as DSU
+import DeepSloop_Utils as DSU
 
 import os
 
@@ -59,7 +59,7 @@ def split_fasta_to_sets(fasta_file_path, train_prop=0.8, test_prop=0.1, val_prop
     assert(num_test_keys + num_val_keys + num_train_keys <= num_sloops)
 
     all_keys = list(sloop_dict.keys())
-    random.shuffle(all_keys)  # I would be careful in assuming that this random library is actually random.
+    random.shuffle(all_keys)
 
     # Collect the keys (RNA_IDs) of the proportioned sloops that will be allocated to each set
     train_keys = all_keys[num_test_keys + num_val_keys:]
@@ -344,4 +344,4 @@ def generate_data_split(fasta_file_path):
     print('Please find your split datasets in the data infrastructure.\n')
 
 
-generate_data_split(r"C:/Users/Douglas/PycharmProjects/Deep_Sloop/Datasets/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150.fasta")
+generate_data_split(r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150.fasta")
