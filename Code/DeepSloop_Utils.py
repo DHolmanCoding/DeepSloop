@@ -1,5 +1,5 @@
 """
-Utility file for the Deep Sloop project. File manipulation utilities and more!
+Utility file for the Deep Sloop project. File manipulation utilities and more. Used as a module throughout the project.
 """
 
 #

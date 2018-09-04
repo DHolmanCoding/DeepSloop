@@ -88,8 +88,8 @@ def split_fasta_to_sets(fasta_file_path, train_prop=0.8, test_prop=0.1, val_prop
 
 def mutate_sloop_data(sloop_dict, num_mutations=1):
     """
-    This subroutine will take in a dictionary full of sloops, perform a random mutation to each sloop,
-    and then return a dictionary full of the mutated sloops with the original sloops.
+    This subroutine will take in a dictionary full of sloops, perform a random mutation to each sloop
+    (single point mutation), and then return a dictionary full of the mutated sloops with the original sloops.
 
     Arguments:
     sloop_dict -- The variable name of the sloop containing dictionary you want to subject to mutation.
@@ -125,7 +125,9 @@ def mutate_sloop_data(sloop_dict, num_mutations=1):
 def reverse_sloop_data(sloop_dict):
     """
     This subroutine will take in a dictionary full of sloops, reverses each sloop,
-    and then return a dictionary full of the mutated sloops.
+    and then return a dictionary full of the both forward and reverse sloops.
+
+    The purpose of this subroutine is primarily experimental.
 
     Arguments:
     sloop_dict -- The variable name of the sloop containing dictionary you want to subject to reversal.
@@ -304,10 +306,7 @@ def generate_data_split(fasta_file_path):
     data_dir = '/'.join(fasta_file_path.split('/')[:-1])
     fasta_filename = fasta_file_path.split('/')[-1]
 
-    train_dict_R = reverse_sloop_data(train_dict)
-    train_dict_M_R = reverse_sloop_data(mutate_sloop_data(train_dict))
-    val_dict_R = reverse_sloop_data(val_dict)
-    test_dict_R = reverse_sloop_data(test_dict)
+    train_dict_M = mutate_sloop_data(train_dict)
 
     file_ext_num = 0
     dir_made = False
@@ -324,10 +323,10 @@ def generate_data_split(fasta_file_path):
 
     # Make a dictionary with keys corresponding to subset datatype labels
     # and values corresponding to the associated dictionary
-    subset_dict = {'Tr_R_NS': train_dict_R,
-                   'Tr_M_R_NS': train_dict_M_R,
-                   'Va_R_NS': val_dict_R,
-                   'Te_R_NS': test_dict_R
+    subset_dict = {'Tr_NS': train_dict,
+                   'Tr_M_NS': train_dict_M,
+                   'Va_NS': val_dict,
+                   'Te_NS': test_dict
                    }
 
     for label in subset_dict.keys():
