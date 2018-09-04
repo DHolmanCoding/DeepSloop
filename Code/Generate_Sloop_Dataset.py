@@ -2,14 +2,6 @@
 This script is designed to consolidate the raw data from allSegments_Filtered.txt and allHairpins_Filtered.txt in order to create
 a dataset full of stem loops (sloops) from hairpin and segment data.
 
-Hairpin data is arranged as such:
-{ RNA ID : [ ( (hp_start, hp_end) , hp_seq ) ] }
-where:
-    RNA ID -- the RNA ID value carried through from the database
-    hp_start -- absolute position of the first nucleotide in the segment
-    hp_end -- absolute position of the last nucleotide in the segment
-    hp_seq -- sequence of segment x2 as a string
-
 Segment data is arranged as such:
 { RNA ID : [ ( (end_5p, start_3p) , seq_5p , seq_3p , bp ) ] }
 where:
@@ -19,6 +11,15 @@ where:
     seq_5p -- sequence of segment seq_5p as a string
     seq_3p -- sequence of segment seq_3p as a string
     bp -- keeps a record of the number of basepairs between seq_5p and seq_3p
+
+Hairpin data is arranged as such:
+{ RNA ID : [ ( (hp_start, hp_end) , hp_seq ) ] }
+where:
+    RNA ID -- the RNA ID value carried through from the database
+    hp_start -- absolute position of the first nucleotide in the segment
+    hp_end -- absolute position of the last nucleotide in the segment
+    hp_seq -- sequence of segment as a string
+
 """
 
 #
@@ -27,10 +28,10 @@ where:
 
 import os
 
-
 #
 # Definitions
 #
+
 
 def read_segment_file(segment_file, min_segment_len, max_segment_len):
     """
@@ -163,7 +164,7 @@ def filter_sloople_list(raw_sloople_list, allow_N=False):
         sloop_id, sloop_seq = sloople
         for nuc in sloop_seq:
             if nuc not in nuc_set:
-                print('We have encountered a tainted datapoint: ', nuc)
+                # print('We have encountered a tainted datapoint: ', nuc)  # Option to print tainted nucleotides
                 tainted = True
                 break
         if not tainted:
@@ -176,7 +177,7 @@ def filter_sloople_list(raw_sloople_list, allow_N=False):
         temp_sloop = (sloop_id, sloop_seq)
         filtered_sloople_list.append(temp_sloop)
 
-    print('We have checked {} sloops for tainted nucleotides'.format(counter1))
+    print('\nWe have checked {} sloops for tainted nucleotides'.format(counter1))
     print('We have added a total of {} unique sloops to your filtered dataset'.format(counter2))
     return filtered_sloople_list
 
@@ -186,16 +187,16 @@ def filter_sloople_list(raw_sloople_list, allow_N=False):
 
 
 def generate_dataset(data_dir=r"../Data",
-                     seg_file="allSegments_Filtered.txt",
-                     hp_file="allHairpins_Filtered.txt",
+                     seg_file="allSegments_Raw.txt",
+                     hp_file="allHairpins_Raw.txt",
                      min_segment_len=20,
                      max_segment_len=150,
                      min_loop_len=3,
                      max_loop_len=22):
     """
     This subroutine takes in the original raw segment and raw hairpin files, and uses them to construct a dataset
-    of RNA stem loops by matching RNA_IDs. This dataset is then subjected to a preliminary filtering process wherein a
-    minimum and maximum total segment length and loop lengths are imposed on the data.
+    of RNA stem loops by matching RNA_IDs. This dataset is then subjected to a preliminary filtering process wherein
+    a minimum and maximum total segment length and loop lengths are imposed on the data.
     """
 
     os.chdir(data_dir)
@@ -207,9 +208,10 @@ def generate_dataset(data_dir=r"../Data",
 
     file_ext_num = 0
     file_unique = False
-    file_out = "Raw_Sloops_Loop_{}_{}_Seg_{}_{}_ext{}.fasta".format(min_loop_len, max_loop_len, min_segment_len, min_segment_len, file_ext_num)
 
     while not file_unique:
+        file_out = "Raw_Sloops_Loop_{}_{}_Seg_{}_{}_ext{}.fasta".format(min_loop_len, max_loop_len, min_segment_len,
+                                                                        max_segment_len, file_ext_num)
         if os.path.exists(os.path.join(data_dir, file_out)):
             file_ext_num += 1
         else:
