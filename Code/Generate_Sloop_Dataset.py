@@ -186,7 +186,7 @@ def filter_sloople_list(raw_sloople_list, allow_N=False):
 #
 
 
-def generate_dataset(data_dir=r"../Data",
+def generate_sloop_dataset(data_dir=r"../Data",
                      seg_file="allSegments_Raw.txt",
                      hp_file="allHairpins_Raw.txt",
                      min_segment_len=20,
