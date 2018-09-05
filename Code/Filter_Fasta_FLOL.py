@@ -38,7 +38,7 @@ def filter_fasta_FLOL(fasta_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_2
     for RNA_ID, sloop in sloop_dict.items():
         sloop_db, mfe, pstats_list = DSU.sloop_to_db(sloop)
         if len(pstats_list) == 4 and pstats_list[0] >= FLOL_thresh:
-            sloop_dict_FLOL[RNA_ID] = sloop_dict
+            sloop_dict_FLOL[RNA_ID] = sloop
 
     print("{}/{} sloops in your dataset met the desired FLOL threshold of {}".format(len(sloop_dict_FLOL), len(sloop_dict), FLOL_thresh))
 
