@@ -88,7 +88,7 @@ def dict_to_fasta(sloop_dict, fasta_file_name):
     """
     with open(fasta_file_name, 'w') as f:
         for RNA_ID, sloop in sloop_dict.items():
-            f.write('>{}\n{}'.format(RNA_ID, sloop))
+            f.write('>{}\n{}\n'.format(RNA_ID, sloop))
 
 
 def pad_sloop(sloop, max_sloop_len, pad_5p=False):
