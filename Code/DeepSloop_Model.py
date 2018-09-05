@@ -1,6 +1,7 @@
 """
-This is Deep Sloop Model, containing a BiLSTM model, with an optional 1D convolution that was used for testing, but was
-ultimately not included in the final model(s).
+This is the Deep Sloop Model, containing a BiLSTM model, with an optional 1D convolution that was used for testing, but was
+ultimately not included in the final model(s). This routine is responsible for testing and validation the model, as well
+as producing visualizations and information regarding the model's performance.
 """
 
 #
@@ -21,12 +22,7 @@ from keras import optimizers
 
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 
-import tensorflow as tf
-
-import numpy as np
-from numpy import array
-
-import Deep_Sloop_Utils as DSU
+import DeepSloop_Utils as DSU
 
 import matplotlib.pyplot as plt
 
@@ -42,7 +38,7 @@ basepairing = {'A': 'U', 'U': 'A', 'C': 'G', 'G': 'C'}
 bases = "ACUG"
 
 
-def Deep_Sloop_Model(repository_path=r"C:/Users/Douglas/PycharmProjects/Deep_Sloop/Datasets/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150_FLOL_split_datasets_010_100mult",
+def Deep_Sloop_Model(repository_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150_FLOL_split_datasets_0",
                      Tr_data_type='NS_RNS',
                      Convolve=False,
                      cv_filters=128, cv_kernel_size=3, cv_strides=1,
@@ -58,7 +54,7 @@ def Deep_Sloop_Model(repository_path=r"C:/Users/Douglas/PycharmProjects/Deep_Slo
 
     Arguments:
     repository_path -- A string representing the FULL path to the directory of the data repository you wish to use
-                       Example: C:/......../filtered_sloops_split_datasets_0
+                       Example: C:/..../filtered_sloops_split_datasets_0
     Tr_data_type -- A string representing the type of data you would like to train on for your deep sloop model
                     types of data:
                     NS - negated and scrambled
@@ -83,9 +79,9 @@ def Deep_Sloop_Model(repository_path=r"C:/Users/Douglas/PycharmProjects/Deep_Slo
     """
     start_time = time.time()
 
-    fasta_file_name = repository_path.split('Datasets/')[-1].split('split_datasets_')[0]
+    fasta_file_name = repository_path.split('Data/')[-1].split('split_datasets_')[0]
     Tr_fasta = os.path.join(repository_path, "{}Tr_{}.fasta".format(fasta_file_name, Tr_data_type))
-    Val_fasta = os.path.join(repository_path, '{}Va_R_NS_RNS.fasta'.format(fasta_file_name))
+    Val_fasta = os.path.join(repository_path, '{}Va_NS_RNS.fasta'.format(fasta_file_name))
 
     # find the maximum sloop length for purposes of padding out your sloops and establishing your Model
     max_sloop_len = max(DSU.ck_sloops_in_fasta(Tr_fasta), DSU.ck_sloops_in_fasta(Val_fasta))
