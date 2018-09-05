@@ -43,7 +43,7 @@ def fasta_to_dict(fasta_file_name, max_sloops=None):
     sloop_dict = {}
     max_sloop_len = 0
     counter = 0
-    print(f'We are reading {fasta_file_name} into a dictionary')
+    print('We are reading {} into a dictionary'.format(fasta_file_name))
 
     # Collect unique sloops into your sloop dictionary
     with open(fasta_file_name, 'r') as f:
@@ -65,8 +65,8 @@ def fasta_to_dict(fasta_file_name, max_sloops=None):
             if counter == max_sloops:
                 break
 
-    print(f'We have read {len(sloop_dict)} sloops from {fasta_file_name} into sloop_dict')
-    print(f'max_sloop_len = {max_sloop_len}\n')
+    print('We have read {} sloops from {} into sloop_dict'.format(len(sloop_dict), fasta_file_name))
+    print('max_sloop_len = {}\n'.format(max_sloop_len))
 
     num_sloops = len(sloop_dict.keys())
 
@@ -88,7 +88,7 @@ def dict_to_fasta(sloop_dict, fasta_file_name):
     """
     with open(fasta_file_name, 'w') as f:
         for RNA_ID, sloop in sloop_dict.items():
-            f.write(f'>{RNA_ID}\n{sloop}')
+            f.write('>{}\n{}'.format(RNA_ID, sloop))
 
 
 def pad_sloop(sloop, max_sloop_len, pad_5p=False):
