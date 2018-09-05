@@ -2,6 +2,8 @@
 The purpose of this subroutine is to ultimately generate your data infrastructure with testing, training, and
 validation data.
 
+Run from Linux server, as calls are made to RNAfold.
+
 Your data infrastructure within your Deep Sloop should be set up as follows:
 >Deep Sloop
 ->Code
@@ -303,10 +305,10 @@ def generate_data_split(fasta_file_path):
                         that you would like to use to generate your data infrastructure.
     """
     fasta_file_path, train_dict, test_dict, val_dict = split_fasta_to_sets(fasta_file_path)
+    train_dict_M = mutate_sloop_data(train_dict)
+
     data_dir = '/'.join(fasta_file_path.split('/')[:-1])
     fasta_filename = fasta_file_path.split('/')[-1]
-
-    train_dict_M = mutate_sloop_data(train_dict)
 
     file_ext_num = 0
     dir_made = False
@@ -343,4 +345,4 @@ def generate_data_split(fasta_file_path):
     print('Please find your split datasets in the data infrastructure.\n')
 
 
-generate_data_split(r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150.fasta")
+generate_data_split(r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150_FLOL.fasta")
