@@ -260,8 +260,8 @@ def Deep_Sloop_Model(repository_path=r"C:/Users/Douglas/PycharmProjects/Deep_Slo
             f.write('mp_pool_size = {}\n'.format(mp_pool_size))
             f.write('mp_strides = {}\n'.format(mp_strides))
 
-        f.write('lstm1 size = {}\n'.format(lstm1_size))
-        f.write('lstm2 size = {}\n'.format(lstm1_size))
+        f.write('lstm1 size = {}\n'.format(lstm_size))
+        f.write('lstm2 size = {}\n'.format(lstm_size))
         f.write('epochs = {}\n'.format(epochs))
         f.write('batch size = {}\n'.format(batch_size))
 
