@@ -33,7 +33,7 @@ def filter_fasta_FLOL(fasta_path=r"..\Data\Filtered_90_70_Sloops_Loop_3_22_Seg_2
     FLOL_fasta_path = "{}_FLOL.fasta".format(base_fasta_path)
 
     sloop_dict_FLOL = {}
-    sloop_dict = DSU.fasta_to_dict()
+    sloop_dict = DSU.fasta_to_dict(fasta_path)
     for RNA_ID, sloop in sloop_dict.items():
         sloop_db, mfe, pstats_list = DSU.sloop_to_db(sloop)
         if pstats_list != 0 and pstats_list[0] >= FLOL_thresh:
