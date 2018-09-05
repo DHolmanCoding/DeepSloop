@@ -6,7 +6,7 @@ Utility file for the Deep Sloop project. File manipulation utilities and more. U
 # Dependencies
 #
 
-import Deep_Sloop_Utils as DSU
+import DeepSloop_Utils as DSU
 
 from numpy import array
 
