@@ -276,6 +276,7 @@ def ck_sloops_in_fasta(fasta_file):
 
     with open(fasta_file, 'r') as file:
         for line in file:
+            line = line.strip()
             num_lines += 1
             if line[0] == '>':
                 continue
