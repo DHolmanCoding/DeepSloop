@@ -18,7 +18,7 @@ import DeepSloop_Utils as DSU
 #
 
 
-def filter_fasta_FLOL(fasta_path=r"..\Data\Filtered_90_70_Sloops_Loop_3_22_Seg_20_150.fasta",
+def filter_fasta_FLOL(fasta_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150.fasta",
                       FLOL_thresh=0.9):
     """
     Takes in a fasta file and then makes a copy where you have filtered out sloops with less than a certain threshold
@@ -33,11 +33,18 @@ def filter_fasta_FLOL(fasta_path=r"..\Data\Filtered_90_70_Sloops_Loop_3_22_Seg_2
     FLOL_fasta_path = "{}_FLOL.fasta".format(base_fasta_path)
 
     sloop_dict_FLOL = {}
-    sloop_dict = DSU.fasta_to_dict(fasta_path)
+    sloop_dict, max_sloop_len, num_sloops = DSU.fasta_to_dict(fasta_path)
+
+    ct = 0
     for RNA_ID, sloop in sloop_dict.items():
         sloop_db, mfe, pstats_list = DSU.sloop_to_db(sloop)
-        if pstats_list != 0 and pstats_list[0] >= FLOL_thresh:
+        if ct % 100 == 0:
+          print(ct)
+        if len(pstats_list) == 4 and pstats_list[0] >= FLOL_thresh:
             sloop_dict_FLOL[RNA_ID] = sloop_dict
+            ct += 1
+
+    print("{}/{} sloops in your dataset met the desired FLOL threshold of {}".format(ct, len(sloop_dict), FLOL_thresh))
 
     with open(FLOL_fasta_path) as f:
         for FLOL_RNA_ID, FLOL_sloop in sloop_dict_FLOL.items():
