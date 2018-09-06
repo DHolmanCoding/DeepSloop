@@ -9,6 +9,8 @@ minimum validation loss and produce an ensemble model that capitalizes on their 
 
 from keras.models import load_model
 
+from keras.layers import Input
+
 import DeepSloop_Utils as DSU
 
 import os
@@ -70,13 +72,17 @@ def gen_ensemble(ensemble_name,
 
     X_Val_tens, y_Val_tens, num_Val_sloops, max_Val_sloop_len = DSU.fasta_to_tens(Val_fasta, max_sloop_len)
 
+    # Instantiate a symbollic tensor for input into the ensemble model
+    X = Input(shape=models[0].input_shape[1:])
+
     # Collect outputs of models in a list
-    model_yhat_list = [model(X_Val_tens) for model in models]
+    model_yhat_list = [model(X) for model in models]
+
     # Average outputs
-    yAvg = layers.average(model_yhat_list)
+    y_avg = layers.average(model_yhat_list)
 
     # Build model from Validaiton data and avg output
-    ensemble_model = Model(inputs=X_Val_tens, outputs=yAvg, name=ensemble_name)
+    ensemble_model = Model(inputs=X, outputs=y_avg, name=ensemble_name)
 
     # Save your model
     ensemble_file_name = ensemble_name + ".hdf5"
