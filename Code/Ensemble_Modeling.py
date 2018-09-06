@@ -43,6 +43,7 @@ def gen_ensemble(ensemble_name,
                  models,
                  repository_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150_FLOL_split_datasets_0",
                  model_results_path = "../Model_Results",
+                 Tr_data_type='NS_RNS',
                  data_type='Va'):
     """
     This routine will take in one or multiple models, and save an ensemble model that averages their predictions on the
@@ -50,15 +51,18 @@ def gen_ensemble(ensemble_name,
 
 
     Arguments:
+    ensemble_name -- A string representing the desired name of your ensemble model
+    models -- If you are using a single model, this will be a single model imported from
     repository_path -- A string representing the  path to the directory of the data repository you wish to use
     model_results_path -- A string representing the path to the directory containing the weights you wish to access
     data_type -- A string indicating the type of data you would like to predict on:
                     'Va' -- validation set
                     'Te' -- test set
-    ensemble_name -- A string representing the desired name of your ensemble model
-    models -- If you are using a single model, this will be a single model imported from
+    Tr_data_type -- A string representing the type of data you used to generate your model. Further minor developments
+                    are required if models were not all trained on the same data type.
     """
     fasta_file_name = repository_path.split('Data/')[-1].split('split_datasets_')[0]
+    Tr_fasta = os.path.join(repository_path, "{}Tr_{}.fasta".format(fasta_file_name, Tr_data_type))
     Val_fasta = os.path.join(repository_path, '{}Va_NS_RNS.fasta'.format(fasta_file_name))
 
     # find the maximum sloop length for purposes of padding out your sloops and establishing your Model
