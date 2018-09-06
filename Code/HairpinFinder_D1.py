@@ -1,9 +1,6 @@
 """
 This script is designed to take in a fasta file with a single RNA sequence which you would like to investigate, and
 scans through the sequence, identifying regions likely to be a hairpin.
-
-To Do:
--- Implement alternative (reverse padding and average the output scores) LOL this is crazy bro.. and clean up the damn code!
 """
 
 #
@@ -24,14 +21,16 @@ import numpy as np
 # Definitions
 #
 
-__author__ = "Marcos Duarte, https://github.com/demotu/BMC"
-__version__ = "1.0.4"
-__license__ = "MIT"
-
-
 def detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising',
                  kpsh=False, valley=False, show=False, ax=None):
-    """Detect peaks in data based on their amplitude and other features.
+    """
+    Original Documentation and Script modified from the following original source:
+    __author__ = "Marcos Duarte, https://github.com/demotu/BMC"
+    __version__ = "1.0.4"
+    __license__ = "MIT"
+
+
+    Detect peaks in data based on their amplitude and other features.
     Parameters
     ----------
     x : 1D array_like
@@ -174,7 +173,7 @@ def plot_peaks(x, indexes):
     for bounds in manual_sloop_bounds:
         sum_sloop_len += (bounds[1] - bounds[0])
         ct += 1
-    # # # # # # # # # # #
+
     ax.set_xlim(-.02 * x.size, x.size * 1.02 - 1)
     ymin, ymax = x[np.isfinite(x)].min(), x[np.isfinite(x)].max()
     yrange = ymax - ymin if ymax > ymin else 1
@@ -191,7 +190,7 @@ def plot_peaks(x, indexes):
 
 # Hairpin_Finder_D1.py will only take the first entry of your fasta file as input
 fasta_file = r"../Data/HOTAIR_Domain1.fasta"
-weights_path = "../Results/Weights/run_2018-08-07_10-36-26_res_bl128_bl128_do5_de1_7_0.134_0.948_0.950.hdf5"
+weights_path = "../Model_Results/Bi_BiDo_Hyb_1_avg.hdf5"
 
 # Read in file to obtain RNA sequence and its length
 sloop_dict, max_sloop_len, num_sloops = DSU.fasta_to_dict(fasta_file)
@@ -207,7 +206,7 @@ master_score_bins = [0 for n in range(seq_len)]
 master_ct_bins = [0 for n in range(seq_len)]
 
 model = load_model(weights_path)
-model.compile(optimizer='RMSprop', loss='binary_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 step_size = 1
 
