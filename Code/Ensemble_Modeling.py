@@ -11,6 +11,8 @@ from keras.models import load_model
 
 from keras.layers import Input
 
+import keras
+
 import DeepSloop_Utils as DSU
 
 import os
@@ -79,15 +81,15 @@ def gen_ensemble(ensemble_name,
     model_yhat_list = [model(X) for model in models]
 
     # Average outputs
-    y_avg = layers.average(model_yhat_list)
+    y_avg = keras.layers.average(model_yhat_list)
 
     # Build model from Validaiton data and avg output
-    ensemble_model = Model(inputs=X, outputs=y_avg, name=ensemble_name)
+    ensemble_model = keras.models.Model(inputs=X, outputs=y_avg, name=ensemble_name)
 
     # Save your model
     ensemble_file_name = ensemble_name + ".hdf5"
     ensemble_model.save(os.path.join(model_results_path, ensemble_file_name))
-
+    print("Your ensemble model has been saved. ")
 
 #
 # Main
@@ -111,7 +113,3 @@ models = model_loader(model_files,
 
 gen_ensemble(ensemble_name="Bi_BiDo_Hyb_1",
              models=models)
-
-# Ensemble_Model=load_model(path2ensModel)
-# Ensemble_Model.summary()
-# y=Ensemble_Model.predict(x)
