@@ -61,6 +61,9 @@ def gen_ensemble(ensemble_name,
     fasta_file_name = repository_path.split('Data/')[-1].split('split_datasets_')[0]
     Val_fasta = os.path.join(repository_path, '{}Va_NS_RNS.fasta'.format(fasta_file_name))
 
+    # find the maximum sloop length for purposes of padding out your sloops and establishing your Model
+    max_sloop_len = max(DSU.ck_sloops_in_fasta(Tr_fasta), DSU.ck_sloops_in_fasta(Val_fasta))
+
     X_Val_tens, y_Val_tens, num_Val_sloops, max_Val_sloop_len = DSU.fasta_to_tens(Val_fasta, max_sloop_len)
 
     # Collect outputs of models in a list
@@ -71,6 +74,7 @@ def gen_ensemble(ensemble_name,
     # Build model from Validaiton data and avg output
     ensemble_model = Model(inputs=X_Val_tens, outputs=yAvg, name=ensemble_name)
 
+    # Save your model
     ensemble_file_name = ensemble_name + ".hdf5"
     ensemble_model.save(os.path.join(model_results_path, ensemble_file_name))
 
