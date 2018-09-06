@@ -43,7 +43,7 @@ def model_loader(model_files,
 
 def gen_ensemble(ensemble_name,
                  models,
-                 model_results_path = "../Model_Results"):
+                 model_results_path="../Model_Results"):
     """
     This routine will take in one or multiple models, and save an ensemble model that averages their predictions on the
     validation data.
@@ -60,7 +60,7 @@ def gen_ensemble(ensemble_name,
     model_yhat_list = [model(X) for model in models]
 
     # Average outputs
-    y_avg = keras.layers.maximum(model_yhat_list)
+    y_avg = keras.layers.average(model_yhat_list)
 
     # Build model from Validaiton data and avg output
     ensemble_model = keras.models.Model(inputs=X, outputs=y_avg, name=ensemble_name)
