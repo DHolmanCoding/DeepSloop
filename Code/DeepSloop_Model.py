@@ -45,7 +45,7 @@ def Deep_Sloop_Model(repository_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_S
                      mp_pool_size=2, mp_strides=2,
                      lstm_size=128,
                      batch_size=16, epochs=32,
-                     custom_expt_name="bl128_bl128_de64_do5_de16_de1",
+                     custom_expt_name="",
                      custom_expt_var="",
                      custom_expt_value=""
                      ):
@@ -112,9 +112,8 @@ def Deep_Sloop_Model(repository_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_S
     model.add(Bidirectional(CuDNNLSTM(lstm_size, return_sequences=False),
                             input_shape=(max_sloop_len, 4)))
 
-    model.add(Dense(64, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(16, activation='relu'))
+
     model.add(Dense(1, activation='sigmoid'))
 
     optimizer_name = 'Adam'
