@@ -60,7 +60,7 @@ def gen_ensemble(ensemble_name,
     model_yhat_list = [model(X) for model in models]
 
     # Average outputs
-    y_avg = keras.layers.average(model_yhat_list)
+    y_avg = keras.layers.maximum(model_yhat_list)
 
     # Build model from Validaiton data and avg output
     ensemble_model = keras.models.Model(inputs=X, outputs=y_avg, name=ensemble_name)
@@ -91,5 +91,5 @@ models = model_loader(model_files,
                       model_names)
 
 
-gen_ensemble(ensemble_name="Bi_BiDo_Hyb_1",
+gen_ensemble(ensemble_name="Bi_BiDo_Hyb_1_max",
              models=models)

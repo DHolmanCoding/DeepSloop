@@ -44,6 +44,6 @@ def DeepSloop_Evaluate(repository_path="../Data/Filtered_90_70_Sloops_Loop_3_22_
     model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
 
     results_list = model.evaluate(X_tens, y_tens, batch_size=batch_size)
-    print(results_list)
+    print("\n", results_list)
 
 DeepSloop_Evaluate()
