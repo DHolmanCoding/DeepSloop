@@ -22,7 +22,7 @@ from keras.layers.convolutional import Conv1D, MaxPooling1D
 import numpy as np
 from numpy import array
 
-import Deep_Sloop_Utils as DSU
+import DeepSloop_Utils as DSU
 
 import os
 
@@ -34,10 +34,10 @@ def data():
     """
     Read in the fasta file full of sloops and output the data in tensor foramt.
     """
-    repository_path = r"../Datas/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150_FLOL_split_datasets_0"
+    repository_path = r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150_FLOL_split_datasets_0"
     Tr_data_type = 'NS_RNS'
 
-    fasta_file_name = repository_path.split('Datasets/')[-1].split('split_datasets_')[0]
+    fasta_file_name = repository_path.split('Data/')[-1].split('split_datasets_')[0]
     Tr_fasta = os.path.join(repository_path, "{}Tr_{}.fasta".format(fasta_file_name, Tr_data_type))
     Val_fasta = os.path.join(repository_path, '{}Va_NS_RNS.fasta'.format(fasta_file_name))
 
