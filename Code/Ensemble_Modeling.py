@@ -39,11 +39,11 @@ def model_loader(model_files,
 
     return models
 
-def gen_ensemble(repository_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150_FLOL_split_datasets_0",
+def gen_ensemble(ensemble_name,
+                 models,
+                 repository_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150_FLOL_split_datasets_0",
                  model_results_path = "../Model_Results",
-                 data_type='Va',
-                 ensemble_name,
-                 models):
+                 data_type='Va'):
     """
     This routine will take in one or multiple models, and save an ensemble model that averages their predictions on the
     validation data.
@@ -68,7 +68,7 @@ def gen_ensemble(repository_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_2
     # Average outputs
     yAvg = layers.average(model_yhat_list)
 
-    # build model from same input and avg output
+    # Build model from Validaiton data and avg output
     ensemble_model = Model(inputs=X_Val_tens, outputs=yAvg, name=ensemble_name)
 
     ensemble_file_name = ensemble_name + ".hdf5"
@@ -95,7 +95,9 @@ models = model_loader(model_files,
                       model_names)
 
 
+gen_ensemble(ensemble_name="Bi_BiDo_Hyb_1",
+             models=models)
 
-Ensemble_Model=load_model(path2ensModel)
-Ensemble_Model.summary()
-y=Ensemble_Model.predict(x)
+# Ensemble_Model=load_model(path2ensModel)
+# Ensemble_Model.summary()
+# y=Ensemble_Model.predict(x)
