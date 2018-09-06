@@ -91,5 +91,5 @@ models = model_loader(model_files,
                       model_names)
 
 
-gen_ensemble(ensemble_name="Bi_BiDo_Hyb_1_max",
+gen_ensemble(ensemble_name="Bi_BiDo_Hyb_1_avg",
              models=models)

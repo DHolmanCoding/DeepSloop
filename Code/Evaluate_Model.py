@@ -20,7 +20,7 @@ import os
 
 def DeepSloop_Evaluate(repository_path="../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150_FLOL_split_datasets_0",
                        model_results_path="../Model_Results",
-                       model_file = "Bi_BiDo_Hyb_1.hdf5",
+                       model_file="Bi_BiDo_Hyb_1_max.hdf5",
                        data_type='Va',
                        batch_size=16):
     """
