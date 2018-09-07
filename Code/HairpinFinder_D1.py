@@ -190,7 +190,7 @@ def plot_peaks(x, indexes):
 
 # Hairpin_Finder_D1.py will only take the first entry of your fasta file as input
 fasta_file = r"../Data/HOTAIR_Domain1.fasta"
-weights_path = "../Model_Results/Bi_BiDo_Hyb_1_avg.hdf5"
+weights_path = "../Model_Results/run_2018-09-06_15-47-17_res_conv_blstm128_blstm128_de64_de16_de1_5_0.146_0.943_0.946.hdf5"
 
 # Read in file to obtain RNA sequence and its length
 sloop_dict, max_sloop_len, num_sloops = DSU.fasta_to_dict(fasta_file)
