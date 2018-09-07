@@ -54,6 +54,7 @@ def data():
 
 X_train, Y_train, X_test, Y_test, max_sloop_len = data()
 
+# Uncomment, but do not delete parameters as try out tuning for different features
 param_values = {
     # 'filters': [64, 128],
     # 'kernel_size': [2, 3, 4],

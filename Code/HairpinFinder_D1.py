@@ -1,6 +1,9 @@
 """
 This script is designed to take in a fasta file with a single RNA sequence which you would like to investigate, and
 scans through the sequence, identifying regions likely to be a hairpin.
+
+To Do:
+-- Implement alternative (reverse padding and average the output scores) LOL this is crazy bro.. and clean up the damn code!
 """
 
 #
@@ -11,7 +14,7 @@ from keras.models import load_model
 
 import matplotlib.pyplot as plt
 
-import DeepSloop_Utils as DSU
+import Deep_Sloop_Utils as DSU
 
 from pylab import *
 
@@ -21,11 +24,114 @@ import numpy as np
 # Definitions
 #
 
-# Original
-# Documentation and Script modified from the following original source:
-# __author__ = "Marcos Duarte, https://github.com/demotu/BMC"
-# __version__ = "1.0.4"
-# __license__ = "MIT"
+__author__ = "Marcos Duarte, https://github.com/demotu/BMC"
+__version__ = "1.0.4"
+__license__ = "MIT"
+
+
+def detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising',
+                 kpsh=False, valley=False, show=False, ax=None):
+    """Detect peaks in data based on their amplitude and other features.
+    Parameters
+    ----------
+    x : 1D array_like
+        data.
+    mph : {None, number}, optional (default = None)
+        detect peaks that are greater than minimum peak height.
+    mpd : positive integer, optional (default = 1)
+        detect peaks that are at least separated by minimum peak distance (in
+        number of data).
+    threshold : positive number, optional (default = 0)
+        detect peaks (valleys) that are greater (smaller) than `threshold`
+        in relation to their immediate neighbors.
+    edge : {None, 'rising', 'falling', 'both'}, optional (default = 'rising')
+        for a flat peak, keep only the rising edge ('rising'), only the
+        falling edge ('falling'), both edges ('both'), or don't detect a
+        flat peak (None).
+    kpsh : bool, optional (default = False)
+        keep peaks with same height even if they are closer than `mpd`.
+    valley : bool, optional (default = False)
+        if True (1), detect valleys (local minima) instead of peaks.
+    show : bool, optional (default = False)
+        if True (1), plot data in matplotlib figure.
+    ax : a matplotlib.axes.Axes instance, optional (default = None).
+    Returns
+    -------
+    ind : 1D array_like
+        indeces of the peaks in `x`.
+    Notes
+    -----
+    The detection of valleys instead of peaks is performed internally by simply
+    negating the data: `ind_valleys = detect_peaks(-x)`
+
+    The function can handle NaN's
+    See this IPython Notebook [1]_.
+    References
+    ----------
+    .. [1] http://nbviewer.ipython.org/github/demotu/BMC/blob/master/notebooks/DetectPeaks.ipynb
+    Examples
+    --------
+    """
+
+    x = np.atleast_1d(x).astype('float64')
+    if x.size < 3:
+        return np.array([], dtype=int)
+    if valley:
+        x = -x
+
+    # find indices of all peaks
+    dx = x[1:] - x[:-1]
+    # handle NaN's
+    indnan = np.where(np.isnan(x))[0]
+    if indnan.size:
+        x[indnan] = np.inf
+        dx[np.where(np.isnan(dx))[0]] = np.inf
+    ine, ire, ife = np.array([[], [], []], dtype=int)
+    if not edge:
+        ine = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) > 0))[0]
+    else:
+        if edge.lower() in ['rising', 'both']:
+            ire = np.where((np.hstack((dx, 0)) <= 0) & (np.hstack((0, dx)) > 0))[0]
+        if edge.lower() in ['falling', 'both']:
+            ife = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) >= 0))[0]
+    ind = np.unique(np.hstack((ine, ire, ife)))
+    # handle NaN's
+    if ind.size and indnan.size:
+        # NaN's and values close to NaN's cannot be peaks
+        ind = ind[np.in1d(ind, np.unique(np.hstack((indnan, indnan - 1, indnan + 1))), invert=True)]
+    # first and last values of x cannot be peaks
+    if ind.size and ind[0] == 0:
+        ind = ind[1:]
+    if ind.size and ind[-1] == x.size - 1:
+        ind = ind[:-1]
+    # remove peaks < minimum peak height
+    if ind.size and mph is not None:
+        ind = ind[x[ind] >= mph]
+    # remove peaks - neighbors < threshold
+    if ind.size and threshold > 0:
+        dx = np.min(np.vstack([x[ind] - x[ind - 1], x[ind] - x[ind + 1]]), axis=0)
+        ind = np.delete(ind, np.where(dx < threshold)[0])
+    # detect small peaks closer than minimum peak distance
+    if ind.size and mpd > 1:
+        ind = ind[np.argsort(x[ind])][::-1]  # sort ind by peak height
+        idel = np.zeros(ind.size, dtype=bool)
+        for i in range(ind.size):
+            if not idel[i]:
+                # keep peaks with the same height if kpsh is True
+                idel = idel | (ind >= ind[i] - mpd) & (ind <= ind[i] + mpd) \
+                       & (x[ind[i]] > x[ind] if kpsh else True)
+                idel[i] = 0  # Keep current peak
+        # remove the small peaks and sort back the indices by their occurrence
+        ind = np.sort(ind[~idel])
+
+    if show:
+        if indnan.size:
+            x[indnan] = np.nan
+        if valley:
+            x = -x
+        _plot(x, mph, mpd, threshold, edge, valley, ax, ind)
+
+    return ind
 
 
 def plot_peaks(x, indexes):
@@ -68,7 +174,7 @@ def plot_peaks(x, indexes):
     for bounds in manual_sloop_bounds:
         sum_sloop_len += (bounds[1] - bounds[0])
         ct += 1
-
+    # # # # # # # # # # #
     ax.set_xlim(-.02 * x.size, x.size * 1.02 - 1)
     ymin, ymax = x[np.isfinite(x)].min(), x[np.isfinite(x)].max()
     yrange = ymax - ymin if ymax > ymin else 1
@@ -85,7 +191,7 @@ def plot_peaks(x, indexes):
 
 # Hairpin_Finder_D1.py will only take the first entry of your fasta file as input
 fasta_file = r"../Data/HOTAIR_Domain1.fasta"
-weights_path = "../Model_Results/run_2018-09-06_15-47-17_res_conv_blstm128_blstm128_de64_de16_de1_5_0.146_0.943_0.946.hdf5"
+weights_path = "../Results/Weights/run_2018-08-07_10-36-26_res_bl128_bl128_do5_de1_7_0.134_0.948_0.950.hdf5"
 
 # Read in file to obtain RNA sequence and its length
 sloop_dict, max_sloop_len, num_sloops = DSU.fasta_to_dict(fasta_file)
@@ -101,7 +207,7 @@ master_score_bins = [0 for n in range(seq_len)]
 master_ct_bins = [0 for n in range(seq_len)]
 
 model = load_model(weights_path)
-model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='RMSprop', loss='binary_crossentropy', metrics=['accuracy'])
 
 step_size = 1
 
@@ -118,11 +224,11 @@ for window_size in window_list:
             sub_seq = RNA_sequence[start:stop]
 
             # First Average the 5p and 3p padded sloops to eliminate any possible artifacts
-            ohe_sloop_3pad = DSU.sloop_to_ohe(DSU.pad_sloop(sub_seq, 166))
+            ohe_sloop_3pad = DSU.sloop_to_ohe(DSU.pad_sloop(sub_seq, 167))
             ohe_sloop_3pad = np.expand_dims(ohe_sloop_3pad, axis=0)
             yhat_3pad = 0.9999999 * float(model.predict(ohe_sloop_3pad, verbose=0)[0][0])
 
-            ohe_sloop_5pad = DSU.sloop_to_ohe(DSU.pad_sloop(sub_seq, 166, True))
+            ohe_sloop_5pad = DSU.sloop_to_ohe(DSU.pad_sloop(sub_seq, 167, True))
             ohe_sloop_5pad = np.expand_dims(ohe_sloop_5pad, axis=0)
             yhat_5pad = 0.9999999 * float(model.predict(ohe_sloop_5pad, verbose=0)[0][0])
 
@@ -145,8 +251,6 @@ for window_size in window_list:
 
     max_avg = max(temp_avg_bins)
     min_avg = min(temp_avg_bins)
-    print(max_avg)
-    print(min_avg)
 
     for i in range(len(temp_avg_bins)):
         if i == (len(temp_avg_bins) - 1):
