@@ -11,7 +11,7 @@ from keras.models import load_model
 
 import matplotlib.pyplot as plt
 
-import Deep_Sloop_Utils as DSU
+import DeepSloop_Utils as DSU
 
 from pylab import *
 
@@ -223,11 +223,11 @@ for window_size in window_list:
             sub_seq = RNA_sequence[start:stop]
 
             # First Average the 5p and 3p padded sloops to eliminate any possible artifacts
-            ohe_sloop_3pad = DSU.sloop_to_ohe(DSU.pad_sloop(sub_seq, 167))
+            ohe_sloop_3pad = DSU.sloop_to_ohe(DSU.pad_sloop(sub_seq, 166))
             ohe_sloop_3pad = np.expand_dims(ohe_sloop_3pad, axis=0)
             yhat_3pad = 0.9999999 * float(model.predict(ohe_sloop_3pad, verbose=0)[0][0])
 
-            ohe_sloop_5pad = DSU.sloop_to_ohe(DSU.pad_sloop(sub_seq, 167, True))
+            ohe_sloop_5pad = DSU.sloop_to_ohe(DSU.pad_sloop(sub_seq, 166, True))
             ohe_sloop_5pad = np.expand_dims(ohe_sloop_5pad, axis=0)
             yhat_5pad = 0.9999999 * float(model.predict(ohe_sloop_5pad, verbose=0)[0][0])
 
