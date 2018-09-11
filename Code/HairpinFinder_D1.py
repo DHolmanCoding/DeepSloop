@@ -63,7 +63,6 @@ def plot_score(x):
     ax.set_ylim(ymin - 0.1 * yrange, ymax + 0.1 * yrange)
     ax.set_xlabel('Position along RNA Sequence (base)')
     ax.set_ylabel('Average Hairpin Presence Score')
-    ax.set_title('HOTAIR Domain 1 Hairpin Detection Test')
     plt.show()
 
 
