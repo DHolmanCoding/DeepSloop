@@ -14,6 +14,7 @@ Q: Does mfe vary with prediction?
 from keras.models import load_model
 
 import matplotlib.pyplot as plt
+matplotlib.use('Agg')
 
 import numpy as np
 
@@ -168,7 +169,8 @@ def mfe_vs_score(weights=r"../Model_Results/run_2018-08-07_10-36-26_res_bl128_bl
 
     for sloop in seq_list:
         ohe_sloop = DSU.sloop_to_ohe(DSU.pad_sloop(sloop, 166))
-        yhat = float(model.predict(ohe_sloop, verbose=0)[0][0])
+        X = np.expand_dims(ohe_sloop, axis=0)
+        yhat = float(model.predict(X, verbose=0)[0][0])
         yprime = float(scipy.special.logit(yhat))
         yhat_list.append(yhat)
         yprime_list.append(yprime)
