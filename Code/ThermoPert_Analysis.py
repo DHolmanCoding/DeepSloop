@@ -13,8 +13,9 @@ Q: Does mfe vary with prediction?
 
 from keras.models import load_model
 
-import matplotlib.pyplot as plt
+import matplotlib
 matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 import numpy as np
 
