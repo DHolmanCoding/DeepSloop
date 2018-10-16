@@ -21,7 +21,7 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 import numpy as np
 from numpy import array
 
-import Deep_Sloop_Utils as DSU
+import DeepSloop_Utils as DSU
 
 import matplotlib.pyplot as plt
 
@@ -262,5 +262,7 @@ if __name__ == '__main__':
                         help='custom_expt_var -- A string representing the variable/parameter you are changing in your experiment')
     parser.add_argument('-cexpt', default="", type=str,
                         help='custom_expt_value -- An integer to help you keep track of how are are altering the parameter of interest')
+
+    args = parser.parse_args()
 
     Deep_Sloop_Model(args.rpath, args.Trdt, args.bs, args.ep, args.cv, args.cvf, args.cvk, args.cvs, args.mps, args.mpst, args.ms, args.cname, args.cvar, args.cexpt)

@@ -46,4 +46,19 @@ def filter_fasta_FLOL(fasta_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_2
         for FLOL_RNA_ID, FLOL_sloop in sloop_dict_FLOL.items():
             f.write('>{}\n{}\n'.format(FLOL_RNA_ID, FLOL_sloop))
 
-filter_fasta_FLOL()
+if __name__ == '__main__':
+    import argparse
+
+    # define arguments for the command line
+    parser = argparse.ArgumentParser()
+
+    # declaring your arguments
+
+    parser.add_argument('-fpath', default=r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150.fasta", type=str,
+                        help="fasta_path -- A string representing the path to a fasta file full of sloops you wish to subject to FLOL filtering")
+    parser.add_argument('-thresh', default=0.9, type=float,
+                        help='FLOL_thresh -- A float in the interval [0,1] representing the threshold for FLOL. Only sloops above this threshold will make it into the final dataset.')
+
+    args = parser.parse_args()
+
+    filter_fasta_FLOL(args.fpath, args.tresh)

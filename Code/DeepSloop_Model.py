@@ -314,4 +314,6 @@ if __name__ == '__main__':
     parser.add_argument('-cexpt', default="", type=str,
                         help='custom_expt_value -- An integer to help you keep track of how are are altering the parameter of interest')
 
+    args = parser.parse_args()
+
     Deep_Sloop_Model(args.rpath, args.Trdt, args.bs, args.ep, args.cv, args.cvf, args.cvk, args.cvs, args.mps, args.mpst, args.ms, args.cname, args.cvar, args.cexpt)
