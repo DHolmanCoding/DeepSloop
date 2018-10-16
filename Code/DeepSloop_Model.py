@@ -266,4 +266,52 @@ def Deep_Sloop_Model(repository_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_S
         f.write('loss fn = {}\n'.format(loss_fn))
 
 
-Deep_Sloop_Model()
+#
+# Python Main
+#
+
+#
+# CMD Line
+#
+
+if __name__ == '__main__':
+    import argparse
+
+    # define arguments for the command line
+    parser = argparse.ArgumentParser()
+
+    # declaring your arguments
+
+    parser.add_argument('-rpath', default=r"C:/Users/Douglas/PycharmProjects/Deep_Sloop/Datasets/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150_FLOL_split_datasets_010_100mult",
+                        type=str, help='A string representing the FULL path to the directory of the data repository you wish to use' )
+    parser.add_argument('-Trdt', default='R_NS_RNS', type=str,
+                        help='Tr_data_type -- A string representing the type of data you would like to train on for your deep sloop model'
+                             ' | types of data:'
+                             'R_NS - reversed, negated and scrambled'
+                             'M_R_NS - mutated, reversed, negated and scrambled')
+    parser.add_argument('-bs', default=16, type=int,
+                        help='batch_size -- An integer representing the number of sloops you will run through before back propogation')
+    parser.add_argument('-ep', default=32, type=int,
+                        help='epochs -- An integer representing the number of times you will pass over your entire dataset')
+    parser.add_argument('-cv', default=False, type=bool,
+                        help='Convolve -- A Boolean indicating whether or not you wish to convolve your sequence prior to BiLSTM processing.')
+    parser.add_argument('-cvf', default=128, type=str,
+                        help='filters -- An integer representing the dimensionality of the output space (i.e. the number of output filters in the convolution).')
+    parser.add_argument('-cvk', default=3, type=int,
+                        help='kernel_size -- An integer specifying the length of the 1D convolution window.')
+    parser.add_argument('-cvs', default=3, type=int,
+                        help='CV_strides: Convolutional Strides: An integer or tuple/list of a single integer, specifying the stride length of the convolution. Specifying any stride value != 1 is incompatible with specifying any dilation_rate value != 1.')
+    parser.add_argument('-mps', default=2, type=int,
+                        help='pool_size -- An integer representing the size of the max pooling windows.')
+    parser.add_argument('-mpst', default=2, type=int,
+                        help='MP_strides -- Max Pooling Strides: Integer, or None. Factor by which to downscale. E.g. 2 will halve the input. If None, it will default to pool_size.')
+    parser.add_argument('-ms', default =128, type=int,
+                        help='model_size1 -- An integer representation the size of the bidirectional LSTM Layer.')
+    parser.add_argument('-cname', default="", type=str,
+                        help='custom_expt_name -- A string representing the name of an experiment you are running to interrogate model performance')
+    parser.add_argument('-cvar', default="", type=str,
+                        help='custom_expt_var -- A string representing the variable/parameter you are changing in your experiment')
+    parser.add_argument('-cexpt', default="", type=str,
+                        help='custom_expt_value -- An integer to help you keep track of how are are altering the parameter of interest')
+
+    Deep_Sloop_Model(args.rpath, args.Trdt, args.bs, args.ep, args.cv, args.cvf, args.cvk, args.cvs, args.mps, args.mpst, args.ms, args.cname, args.cvar, args.cexpt)
