@@ -345,4 +345,22 @@ def generate_data_split(fasta_file_path):
     print('Please find your split datasets in the data infrastructure.\n')
 
 
-generate_data_split(r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150_FLOL.fasta")
+#
+# Main
+#
+
+if __name__ == '__main__':
+    import argparse
+
+    # define arguments for the command line
+    parser = argparse.ArgumentParser()
+
+    # declaring your arguments
+
+    parser.add_argument('-fpath', default=r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150.fasta", type=str,
+                        help="fasta_path -- A string representing the path to a fasta file full you wish to use to initialize your data infrastructure.")
+
+    args = parser.parse_args()
+
+
+    generate_data_split(args.fpath)

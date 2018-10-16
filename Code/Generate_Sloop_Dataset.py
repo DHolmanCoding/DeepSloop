@@ -181,6 +181,7 @@ def filter_sloople_list(raw_sloople_list, allow_N=False):
     print('We have added a total of {} unique sloops to your filtered dataset'.format(counter2))
     return filtered_sloople_list
 
+
 #
 # Main
 #
@@ -222,3 +223,35 @@ def generate_sloop_dataset(data_dir=r"../Data",
             sloop_id, sloop_seq = sloople
             f.write('>{}\n'.format(sloop_id))
             f.write(sloop_seq + '\n')
+
+
+#
+# Main
+#
+
+if __name__ == '__main__':
+    import argparse
+
+    # define arguments for the command line
+    parser = argparse.ArgumentParser()
+
+    # declaring your arguments
+
+    parser.add_argument('-ddir', default=r"../Data", type=str,
+                        help="data dir -- A string representing the path to the main data directory")
+    parser.add_argument('-sfile', default="allSegments_Raw.txt", type=str,
+                        help='stemloop file -- A string representing the path to the raw segments data file')
+    parser.add_argument('-hfile', default=r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150.fasta", type=str,
+                        help="hairpin file -- A string representing the path to the hairpin segments data file")
+    parser.add_argument('-mins', default=20, type=int,
+                        help='min segment length -- The minimum allowable segment length')
+    parser.add_argument('-maxs', default=150, type=int,
+                        help='max segment length -- The maximum allowable segment length')
+    parser.add_argument('-minl', default=3, type=int,
+                        help='min loop length -- The minimum allowable loop length')
+    parser.add_argument('-maxl', default=22, type=int,
+                        help='max loop length -- The maximum allowable loop length')
+
+    args = parser.parse_args()
+
+    filter_fasta_FLOL(args.ddir, args.sfile, args.hfile, args.mins, args.maxs, args.minl, args.maxl)

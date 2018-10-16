@@ -267,11 +267,7 @@ def Deep_Sloop_Model(repository_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_S
 
 
 #
-# Python Main
-#
-
-#
-# CMD Line
+# Main
 #
 
 if __name__ == '__main__':

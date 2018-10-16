@@ -212,15 +212,8 @@ def Deep_Sloop_Model(repository_path=r"C:/Users/Douglas/PycharmProjects/Deep_Slo
             for epoch in range(len(epoch_range)):
                 f.write('{},{},{},{},{}\n'.format(1, custom_expt_value, epoch, val_loss[epoch], val_acc[epoch]))
 
-
 #
-# Python Main
-#
-
-# Deep_Sloop_Model()
-
-#
-# CMD Line
+# Main
 #
 
 if __name__ == '__main__':

@@ -14,9 +14,8 @@ FLOL = Fraction of left parenthesis on the left.
 import DeepSloop_Utils as DSU
 
 #
-# Main
+# Definitions
 #
-
 
 def filter_fasta_FLOL(fasta_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_20_150.fasta",
                       FLOL_thresh=0.9):
@@ -45,6 +44,10 @@ def filter_fasta_FLOL(fasta_path=r"../Data/Filtered_90_70_Sloops_Loop_3_22_Seg_2
     with open(FLOL_fasta_path, 'w') as f:
         for FLOL_RNA_ID, FLOL_sloop in sloop_dict_FLOL.items():
             f.write('>{}\n{}\n'.format(FLOL_RNA_ID, FLOL_sloop))
+
+#
+# Main
+#
 
 if __name__ == '__main__':
     import argparse

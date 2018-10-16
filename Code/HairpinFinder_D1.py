@@ -67,88 +67,110 @@ def plot_score(x):
 
 
 #
-# Main
+# Definitions
 #
 
 # Hairpin_Finder_D1.py will only take the first entry of your fasta file as input
-fasta_file = r"../Data/HOTAIR_Domain1.fasta"
-weights_path = "C:/Users/Douglas/PycharmProjects/Deep_Sloop/Results/Weights/run_2018-08-07_10-36-26_res_bl128_bl128_do5_de1_7_0.134_0.948_0.950.hdf5"
+def Hairpin_Finder(fasta_file = r"../Data/HOTAIR_Domain1.fasta",
+    weights_path = "../Results/Weights/run_2018-08-07_10-36-26_res_bl128_bl128_do5_de1_7_0.134_0.948_0.950.hdf5"):
 
-# Read in file to obtain RNA sequence and its length
-sloop_dict, max_sloop_len, num_sloops = DSU.fasta_to_dict(fasta_file)
-DNA_ID, DNA_sequence = list(sloop_dict.items())[0]
-DNA_sequence = DNA_sequence.upper()
-RNA_sequence = DNA_sequence.replace('T', 'U')
-seq_len = len(RNA_sequence)
+    # Read in file to obtain RNA sequence and its length
+    sloop_dict, max_sloop_len, num_sloops = DSU.fasta_to_dict(fasta_file)
+    DNA_ID, DNA_sequence = list(sloop_dict.items())[0]
+    DNA_sequence = DNA_sequence.upper()
+    RNA_sequence = DNA_sequence.replace('T', 'U')
+    seq_len = len(RNA_sequence)
 
-window_list = [20, 24, 28, 32, 36, 40, 44, 48]  # Over 40 is a useless window
-plotting_index = [n for n in range(1, (seq_len + 1))]
+    window_list = [20, 24, 28, 32, 36, 40, 44, 48]  # Over 40 is a useless window
+    plotting_index = [n for n in range(1, (seq_len + 1))]
 
-master_score_bins = [0 for n in range(seq_len)]
-master_ct_bins = [0 for n in range(seq_len)]
+    master_score_bins = [0 for n in range(seq_len)]
+    master_ct_bins = [0 for n in range(seq_len)]
 
-model = load_model(weights_path)
-model.compile(optimizer='RMSprop', loss='binary_crossentropy', metrics=['accuracy'])
+    model = load_model(weights_path)
+    model.compile(optimizer='RMSprop', loss='binary_crossentropy', metrics=['accuracy'])
 
-step_size = 1
+    step_size = 1
 
-# Go through your sequence using a sliding window and use DeepSloop to provide a estimation of the presence of a sloop
-for window_size in window_list:
-    temp_max_bins = [0 for n in range(seq_len)]
-    temp_avg_bins = [0 for n in range(seq_len)]
-    temp_avg_norm_bins = [0 for n in range(seq_len)]
-    temp_ct_bins = [0 for n in range(seq_len)]
-    if window_size < seq_len:
-        start = 0
-        stop = window_size
-        while stop <= seq_len:
-            sub_seq = RNA_sequence[start:stop]
+    # Go through your sequence using a sliding window and use DeepSloop to provide a estimation of the presence of a sloop
+    for window_size in window_list:
+        temp_max_bins = [0 for n in range(seq_len)]
+        temp_avg_bins = [0 for n in range(seq_len)]
+        temp_avg_norm_bins = [0 for n in range(seq_len)]
+        temp_ct_bins = [0 for n in range(seq_len)]
+        if window_size < seq_len:
+            start = 0
+            stop = window_size
+            while stop <= seq_len:
+                sub_seq = RNA_sequence[start:stop]
 
-            # First Average the 5p and 3p padded sloops to eliminate any possible artifacts
-            ohe_sloop_3pad = DSU.sloop_to_ohe(DSU.pad_sloop(sub_seq, 167))
-            ohe_sloop_3pad = np.expand_dims(ohe_sloop_3pad, axis=0)
-            yhat_3pad = 0.9999999 * float(model.predict(ohe_sloop_3pad, verbose=0)[0][0])
+                # First Average the 5p and 3p padded sloops to eliminate any possible artifacts
+                ohe_sloop_3pad = DSU.sloop_to_ohe(DSU.pad_sloop(sub_seq, 167))
+                ohe_sloop_3pad = np.expand_dims(ohe_sloop_3pad, axis=0)
+                yhat_3pad = 0.9999999 * float(model.predict(ohe_sloop_3pad, verbose=0)[0][0])
 
-            ohe_sloop_5pad = DSU.sloop_to_ohe(DSU.pad_sloop(sub_seq, 167, True))
-            ohe_sloop_5pad = np.expand_dims(ohe_sloop_5pad, axis=0)
-            yhat_5pad = 0.9999999 * float(model.predict(ohe_sloop_5pad, verbose=0)[0][0])
+                ohe_sloop_5pad = DSU.sloop_to_ohe(DSU.pad_sloop(sub_seq, 167, True))
+                ohe_sloop_5pad = np.expand_dims(ohe_sloop_5pad, axis=0)
+                yhat_5pad = 0.9999999 * float(model.predict(ohe_sloop_5pad, verbose=0)[0][0])
 
-            yhat = ((yhat_3pad + yhat_5pad) / 2)
+                yhat = ((yhat_3pad + yhat_5pad) / 2)
 
-            for i in range(start, stop):
-                if yhat > temp_max_bins[i]:
-                    temp_max_bins[i] = yhat
-                temp_avg_bins[i] += yhat
-                temp_ct_bins[i] += 1
+                for i in range(start, stop):
+                    if yhat > temp_max_bins[i]:
+                        temp_max_bins[i] = yhat
+                    temp_avg_bins[i] += yhat
+                    temp_ct_bins[i] += 1
 
-            start += step_size
-            stop += step_size
+                start += step_size
+                stop += step_size
 
-    # Average your temporary score bins and then merge them to the master bins
-    assert len(temp_avg_bins) == len(temp_max_bins)
+        # Average your temporary score bins and then merge them to the master bins
+        assert len(temp_avg_bins) == len(temp_max_bins)
 
-    for i in range(len(temp_avg_bins)):
-        temp_avg_bins[i] = temp_avg_bins[i] / temp_ct_bins[i]
+        for i in range(len(temp_avg_bins)):
+            temp_avg_bins[i] = temp_avg_bins[i] / temp_ct_bins[i]
 
-    max_avg = max(temp_avg_bins)
-    min_avg = min(temp_avg_bins)
+        max_avg = max(temp_avg_bins)
+        min_avg = min(temp_avg_bins)
 
-    for i in range(len(temp_avg_bins)):
-        if i == (len(temp_avg_bins) - 1):
-            print(f'Temp max bins for {window_size}:', temp_max_bins)
-            print(f'Temp average bins for {window_size}:', temp_avg_bins, '\n')
-        temp_avg_norm_bins[i] = (temp_avg_bins[i] - min_avg) / (max_avg - min_avg)
+        for i in range(len(temp_avg_bins)):
+            if i == (len(temp_avg_bins) - 1):
+                print(f'Temp max bins for {window_size}:', temp_max_bins)
+                print(f'Temp average bins for {window_size}:', temp_avg_bins, '\n')
+            temp_avg_norm_bins[i] = (temp_avg_bins[i] - min_avg) / (max_avg - min_avg)
 
-        max_score = temp_max_bins[i]
+            max_score = temp_max_bins[i]
 
-        score = temp_avg_norm_bins[i] * max_score
+            score = temp_avg_norm_bins[i] * max_score
 
-        master_score_bins[i] += score
-        master_ct_bins[i] += 1
+            master_score_bins[i] += score
+            master_ct_bins[i] += 1
 
-# Average your master score bins
-for i in range(len(master_score_bins)):
-    n_score = master_score_bins[i] / master_ct_bins[i]
-    master_score_bins[i] = n_score
+    # Average your master score bins
+    for i in range(len(master_score_bins)):
+        n_score = master_score_bins[i] / master_ct_bins[i]
+        master_score_bins[i] = n_score
 
-plot_score(np.array(master_score_bins))
+    return master_score_bins
+
+
+#
+# Main
+#
+
+if __name__ == '__main__':
+    import argparse
+
+    # define arguments for the command line
+    parser = argparse.ArgumentParser()
+
+    # declaring your arguments
+
+    parser.add_argument('-ddir', default=r"../Data/HOTAIR_Domain1.fasta", type=str,
+                        help="data file -- A string representing the path to fasta file you wish you send into the hairpin detector")
+    parser.add_argument('-wts', default="../Results/Weights/run_2018-08-07_10-36-26_res_bl128_bl128_do5_de1_7_0.134_0.948_0.950.hdf5", type=str,
+                        help='weights path -- A string representing the path to the weights file you wish you use')
+
+    args = parser.parse_args()
+
+    plot_score(np.array(Hairpin_Finder(args.ddir, args.wts)))
