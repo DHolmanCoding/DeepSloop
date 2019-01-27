@@ -254,4 +254,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    filter_fasta_FLOL(args.ddir, args.sfile, args.hfile, args.mins, args.maxs, args.minl, args.maxl)
+    generate_sloop_dataset(args.ddir, args.sfile, args.hfile, args.mins, args.maxs, args.minl, args.maxl)
