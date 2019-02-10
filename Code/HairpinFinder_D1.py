@@ -1,9 +1,6 @@
 """
 This script is designed to take in a fasta file with a single RNA sequence which you would like to investigate, and
 scans through the sequence, identifying regions likely to be a hairpin.
-
-To Do:
--- Implement alternative (reverse padding and average the output scores) LOL this is crazy bro.. and clean up the damn code!
 """
 
 #
